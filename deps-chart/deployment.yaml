@@ -1,0 +1,68 @@
+{{- range .Values.apps }}
+apiVersion: apps/v1
+kind: {{ if .useStatefulSet }}StatefulSet{{ else }}Deployment{{ end }}
+metadata:
+  name: {{ .name }}
+spec:
+  replicas: {{ .replicas | default 1 }}
+  selector:
+    matchLabels:
+      app: {{ .name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .name }}
+    spec:
+      containers:
+        - name: {{ .name }}
+          {{- if .command }}
+          command: {{ .command | toJson }}
+          {{- end }}
+          image: {{ .containerImage }}
+          imagePullPolicy: {{ .imagePullPolicy }}
+          resources:
+            requests:
+              cpu: {{ .resources.requests.cpu }}
+              memory: {{ .resources.requests.memory }}
+            limits:
+              cpu: {{ .resources.limits.cpu }}
+              memory: {{ .resources.limits.memory }}
+          ports:
+            {{- if eq (len .ports) 1 }}
+            - containerPort: {{ (index .ports 0).containerPort }}
+              name: {{ (index .ports 0).serviceName }}
+            {{- else }}
+            {{- range .ports }}
+            - containerPort: {{ .containerPort }}
+              name: {{ .serviceName }}
+            {{- end }}
+            {{- end }}
+          {{- if .securityContext }}
+          securityContext:
+            capabilities:
+              add: {{ .securityContext.capabilities.add | toJson }}
+          {{- end }}
+          {{- if .env }}
+          env:
+            {{- range .env }}
+            - name: {{ .envName }}
+              value: {{ .envValue | quote }}
+            {{- end }}
+          {{- end }}
+          {{- if .volumeMounts }}
+          volumeMounts:
+            {{- range .volumeMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+            {{- end }}
+          {{- end }}
+      {{- if .volumes }}
+      volumes:
+        {{- range .volumes }}
+        - name: {{ .name }}
+          persistentVolumeClaim:
+            claimName: {{ .persistentVolumeClaim.claimName }}
+        {{- end }}
+      {{- end }}
+---
+{{- end }}

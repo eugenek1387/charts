@@ -1,0 +1,8 @@
+apiVersion: v2
+name: deps-chart-new
+description: A Helm chart with dependencies installed in a loop from a template
+
+type: application
+
+version: 0.2.0
+appVersion: "2.0.0"

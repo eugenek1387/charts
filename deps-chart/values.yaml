@@ -1,0 +1,159 @@
+apps:
+
+  - name: nats
+    # replicas: 1
+    useStatefulSet: false
+    containerImage: nats:2.10.21-alpine3.20
+    imagePullPolicy: IfNotPresent
+    resources:
+      requests:
+        cpu: "20m"
+        memory: "16Mi"
+      limits:
+        cpu: "40m"
+        memory: "32Mi"
+    ports:
+      - containerPort: 4222
+        servicePort: 4222
+
+  - name: imgproxy
+    # replicas: 1
+    useStatefulSet: false
+    containerImage: willnorris/imageproxy:v0.10.0
+    imagePullPolicy: IfNotPresent
+    resources:
+      requests:
+        cpu: "20m"
+        memory: "32Mi"
+      limits:
+        cpu: "40m"
+        memory: "64Mi"
+    ports:
+      - containerPort: 8080
+        servicePort: 80
+        serviceName: http
+      - containerPort: 8081
+        servicePort: 8081
+        serviceName: metrics
+
+  - name: consul
+    # replicas: 1
+    useStatefulSet: false
+    containerImage: consul:1.15.4
+    imagePullPolicy: Always
+    resources:
+      requests:
+        cpu: "30m"
+        memory: "32Mi"
+      limits:
+        cpu: "60m"
+        memory: "64Mi"
+    command:
+      - "consul"
+      - "agent"
+      - "-dev"
+      - "-client=0.0.0.0"
+      - "-bind=0.0.0.0"
+    ports:
+      - containerPort: 8500
+        servicePort: 8500
+        serviceName: ui-port
+
+  - name: redis
+    # replicas: 1
+    useStatefulSet: true
+    containerImage: bitnami/redis:7.2.2-debian-11-r0
+    imagePullPolicy: IfNotPresent
+    resources:
+      requests:
+        cpu: "20m"
+        memory: "8Mi"
+      limits:
+        cpu: "40m"
+        memory: "16Mi"
+    env:
+      - envName: ALLOW_EMPTY_PASSWORD
+        envValue: "yes"
+    ports:
+      - containerPort: 6379
+        servicePort: 6379
+        serviceName: redis-port
+    createPVC: true
+    volumeMounts:
+      - name: redis-volume
+        mountPath: /data
+    volumes:
+      - name: redis-volume
+        persistentVolumeClaim:
+          claimName: redis-pvc
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 2Gi
+
+  - name: mailhog
+    # replicas: 1
+    useStatefulSet: false
+    containerImage: mailhog/mailhog:v1.0.1
+    imagePullPolicy: IfNotPresent
+    resources:
+      requests:
+        cpu: "10m"
+        memory: "8Mi"
+      limits:
+        cpu: "20m"
+        memory: "16Mi"
+    ports:
+      - containerPort: 8025
+        servicePort: 8025
+        serviceName: http
+      - containerPort: 1025
+        servicePort: 1025
+        serviceName: tcp-smtp
+
+  - name: chrome
+    replicas: 2
+    useStatefulSet: false
+    containerImage: cr.yandex/crppkqrvvre2ii9lshr5/chrome:0.2
+    imagePullPolicy: Always
+    resources:
+      requests:
+        cpu: "20m"
+        memory: "64Mi"
+      limits:
+        cpu: "40m"
+        memory: "128Mi"
+    securityContext:
+      capabilities:
+        add:
+          - "SYS_ADMIN"
+    ports:
+      - containerPort: 9222
+        servicePort: 9222
+        serviceName: server
+
+  - name: microapi
+    # replicas: 1
+    useStatefulSet: false
+    containerImage: cr.yandex/crppkqrvvre2ii9lshr5/micro:0.5
+    imagePullPolicy: Always
+    resources:
+      requests:
+        cpu: "10m"
+        memory: "8Mi"
+      limits:
+        cpu: "20m"
+        memory: "16Mi"
+    env:
+      - envName: MICRO_REGISTRY
+        envValue: consul
+      - envName: MICRO_REGISTRY_ADDRESS
+        envValue: consul:8500
+      - envName: MICRO_CLIENT_REQUEST_TIMEOUT
+        envValue: 30s
+    ports:
+      - containerPort: 8080
+        servicePort: 8080
+        serviceName: microapi-port
