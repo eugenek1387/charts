@@ -1,0 +1,19 @@
+name: notif
+
+image:
+  repository: cr.yandex/crp6fd91rf3bhoqildrp/notif
+  tag: "0.3"
+  pullPolicy: IfNotPresent
+
+resources:
+  requests:
+    cpu: "10m"
+    memory: "8Mi"
+  limits:
+    cpu: "20m"
+    memory: "16Mi"
+
+
+envСustom:
+  - name: MAJOR_DOMAIN
+    value: https://app.jk-lab.ru

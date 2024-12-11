@@ -1,0 +1,14 @@
+name: quiz
+
+image:
+  repository: cr.yandex/crp6fd91rf3bhoqildrp/quiz
+  tag: "0.2"
+  pullPolicy: IfNotPresent
+
+resources:
+  requests:
+    cpu: "10m"
+    memory: "8Mi"
+  limits:
+    cpu: "20m"
+    memory: "16Mi"

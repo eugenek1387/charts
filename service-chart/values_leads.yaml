@@ -1,0 +1,14 @@
+name: leads
+
+image:
+  repository: cr.yandex/crp6fd91rf3bhoqildrp/leads
+  tag: "0.3"
+  pullPolicy: IfNotPresent
+
+resources:
+  requests:
+    cpu: "10m"
+    memory: "8Mi"
+  limits:
+    cpu: "20m"
+    memory: "16Mi"

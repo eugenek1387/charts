@@ -1,0 +1,23 @@
+name: land
+
+image:
+  repository: cr.yandex/crp6fd91rf3bhoqildrp/land
+  tag: "0.7"
+  pullPolicy: IfNotPresent
+
+resources:
+  requests:
+    cpu: "20m"
+    memory: "16Mi"
+  limits:
+    cpu: "50m"
+    memory: "32Mi"
+
+
+ports:
+  - containerPort: 80
+    serviceName: http
+
+service:
+  type: ClusterIP
+  port: 80

@@ -1,0 +1,14 @@
+name: users
+
+image:
+  repository: cr.yandex/crp6fd91rf3bhoqildrp/users
+  tag: "0.2"
+  pullPolicy: IfNotPresent
+
+resources:
+  requests:
+    cpu: "20m"
+    memory: "16Mi"
+  limits:
+    cpu: "40m"
+    memory: "32Mi"

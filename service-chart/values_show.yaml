@@ -1,0 +1,22 @@
+name: show
+
+image:
+  repository: cr.yandex/crp6fd91rf3bhoqildrp/show
+  tag: "0.1"
+  pullPolicy: IfNotPresent
+
+resources:
+  requests:
+    cpu: "10m"
+    memory: "8Mi"
+  limits:
+    cpu: "20m"
+    memory: "16Mi"
+
+ports:
+  - containerPort: 6050
+    serviceName: http
+
+service:
+  type: ClusterIP
+  port: 6050

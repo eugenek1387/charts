@@ -1,0 +1,22 @@
+name: uploader
+
+image:
+  repository: cr.yandex/crp6fd91rf3bhoqildrp/uploader
+  tag: "0.1"
+  pullPolicy: IfNotPresent
+
+resources:
+  requests:
+    cpu: "20m"
+    memory: "16Mi"
+  limits:
+    cpu: "40m"
+    memory: "32Mi"
+
+ports:
+  - containerPort: 5050
+    serviceName: http
+
+service:
+  type: ClusterIP
+  port: 5050

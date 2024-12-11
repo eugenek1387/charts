@@ -1,0 +1,14 @@
+name: jobber
+
+image:
+  repository: cr.yandex/crp6fd91rf3bhoqildrp/jobber
+  tag: "0.1"
+  pullPolicy: IfNotPresent
+
+resources:
+  requests:
+    cpu: "400m"
+    memory: "16Mi"
+  limits:
+    cpu: "600m"
+    memory: "32Mi"

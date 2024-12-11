@@ -1,0 +1,28 @@
+{{- if .Values.service }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Values.name }}-{{ .Release.Namespace }}
+  # namespace: {{ .Values.namespace }}
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: "nginx"
+  tls:
+  - hosts:
+    - {{ .Values.name }}.{{ .Release.Namespace }}.jk-lab.ru
+    secretName: {{ .Values.name }}-{{ .Release.Namespace }}-jk-lab-tls
+  rules:
+  - host: {{ .Values.name }}.{{ .Release.Namespace }}.jk-lab.ru
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ .Values.name }}
+            port:
+              number: {{ .Values.service.port }}
+{{- end }}

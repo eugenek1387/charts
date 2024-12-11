@@ -1,0 +1,9 @@
+envGlobal:
+  - name: MICRO_REGISTRY
+    value: consul
+  - name: MICRO_REGISTRY_ADDRESS
+    value: consul.deps.svc.cluster.local:8500
+  - name: MICRO_TRANSPORT
+    value: nats
+  - name: MICRO_TRANSPORT_ADDRESS
+    value: nats.deps.svc.cluster.local:4222
